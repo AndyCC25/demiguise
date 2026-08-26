@@ -1,0 +1,261 @@
+/*
+ * ===== Direction contract =====================================================
+ * THESIS: A precision frame around real work. Photographs carry all authority;
+ *         chrome exists only to name what they show and offer an exit.
+ * OWN-WORLD: Deep forest green (#1B6B3A) on warm off-white (#F5F2EE);
+ *            Josefin Sans headings (geometric, architectural); Lato body;
+ *            hairline green rule accents; no gradients, no glass.
+ * STORY: Logo + tagline → catalog scroll → two WhatsApp exits.
+ * FIRST VIEWPORT: Logo centered above tagline; 2-col image grid starts
+ *                 immediately — the work is the first content.
+ * FORM: Single-page scroll, uniform 4:3 grid, no categories v1.
+ * FINISH: unreviewed and undocumented is unfinished; ends with finish review.
+ * ============================================================================
+ */
+
+/* -- Reset ----------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body, "Lato", sans-serif);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* -- Design tokens --------------------------------------------------------- */
+:root {
+  --color-green:        #1B6B3A;
+  --color-green-dark:   #14502C;
+  --color-green-light:  #E8F4EE;
+  --color-charcoal:     #1E2020;
+  --color-bg:           #F5F2EE;
+  --color-surface:      #FFFFFF;
+  --color-border:       rgba(27,107,58,.15);
+  --color-text:         #1E2020;
+  --color-text-muted:   #5A6B60;
+  --color-whatsapp:     #25D366;
+  --font-display:       "Josefin Sans", "Segoe UI", sans-serif;
+  --font-body:          "Lato", "Segoe UI", sans-serif;
+  --radius:             6px;
+  --shadow-sm:          0 1px 4px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:          0 4px 16px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+  --ease-out:           cubic-bezier(.16,1,.3,1);
+}
+
+/* -- Custom scrollbar ------------------------------------------------------ */
+::-webkit-scrollbar         { width: 5px; }
+::-webkit-scrollbar-track   { background: var(--color-bg); }
+::-webkit-scrollbar-thumb   { background: var(--color-green); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-green-dark); }
+
+/* -- Text selection -------------------------------------------------------- */
+::selection { background: var(--color-green); color: #fff; }
+
+/* -- Focus ring ------------------------------------------------------------ */
+:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* -- Accessibility: screen-reader only ------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* -- Page entry animation -------------------------------------------------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 500ms var(--ease-out) both; }
+.fade-in-delay { animation: fadeInUp 500ms 160ms var(--ease-out) both; }
+
+/* -- Section separator rule ------------------------------------------------ */
+.section-rule {
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: var(--color-green);
+  margin: 0 auto 16px;
+  border: none;
+}
+
+/* -- Catalog: wrapper & meta ----------------------------------------------- */
+.catalog-wrapper { padding-bottom: 8px; }
+
+.catalog-empty {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+}
+
+.catalog-counter {
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  padding: 0 16px 20px;
+}
+
+/* -- Catalog: masonry layout ----------------------------------------------- */
+/*
+ * CSS columns gives true masonry — images render at their natural proportion,
+ * not cropped to a forced aspect ratio. Tall wardrobe photos stay tall; wide
+ * desk shots stay wide. Columns reflow automatically per breakpoint.
+ */
+.catalog-masonry {
+  columns: 2;
+  column-gap: 8px;
+  padding: 0 12px;
+}
+
+@keyframes catalogItemIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.catalog-masonry-item {
+  break-inside: avoid;           /* prevent a single image splitting columns */
+  margin-bottom: 8px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: zoom-in;
+  animation: catalogItemIn 360ms var(--ease-out) both;
+}
+
+/* antd Image wrapper must follow the column width */
+.catalog-masonry-item .ant-image {
+  width: 100% !important;
+  display: block !important;
+}
+.catalog-masonry-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 200ms ease-out;
+}
+.catalog-masonry-item:hover img { opacity: 0.9; }
+
+.catalog-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;           /* sane placeholder until real image loads */
+  background: var(--color-green-light);
+  display: block;
+}
+
+@media (min-width: 600px) {
+  .catalog-masonry { columns: 3; column-gap: 10px; padding: 0 16px; }
+  .catalog-masonry-item { margin-bottom: 10px; }
+}
+@media (min-width: 900px) {
+  .catalog-masonry { columns: 4; column-gap: 12px; padding: 0 24px; }
+  .catalog-masonry-item { margin-bottom: 12px; }
+}
+@media (min-width: 1400px) {
+  .catalog-masonry { columns: 5; }
+}
+
+/* -- Catalog: load-more controls ------------------------------------------- */
+.catalog-load-more {
+  padding: 28px 24px 52px;
+  text-align: center;
+}
+
+/* Hairline progress bar — shows what fraction of the catalog is visible */
+.catalog-progress-track {
+  width: 140px;
+  height: 2px;
+  background: var(--color-border);
+  border-radius: 1px;
+  margin: 0 auto 20px;
+  overflow: hidden;
+}
+.catalog-progress-fill {
+  height: 100%;
+  width: 100%;                       /* always full-width… */
+  background: var(--color-green);
+  border-radius: 1px;
+  transform-origin: left center;     /* …scaled from the left */
+  transform: scaleX(var(--pct, 0));
+  transition: transform 500ms var(--ease-out);
+}
+
+.load-more-btn {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-green);
+  background: transparent;
+  border: 1.5px solid var(--color-green);
+  border-radius: var(--radius);
+  padding: 12px 32px;
+  cursor: pointer;
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out),
+              transform 120ms ease-out;
+  -webkit-appearance: none;
+  touch-action: manipulation;    /* faster tap response on mobile */
+}
+.load-more-btn:hover { background: var(--color-green); color: #fff; }
+.load-more-btn:active { transform: translateY(1px); }
+
+.catalog-all-loaded {
+  text-align: center;
+  padding: 12px 16px 52px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* -- Video section --------------------------------------------------------- */
+.video-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: #000;
+  margin-bottom: 16px;
+}
+.video-card video { width: 100%; height: auto; display: block; }
+
+/* -- Section heading block ------------------------------------------------- */
+.section-header {
+  padding: 48px 16px 24px;
+  text-align: center;
+}
+@media (min-width: 900px) { .section-header { padding: 64px 24px 32px; } }
+
+/* -- WhatsApp call-to-action strip ---------------------------------------- */
+.whatsapp-strip {
+  background: var(--color-green-light);
+  border-top: 1px solid var(--color-border);
+  padding: 56px 16px;
+  text-align: center;
+}
+.whatsapp-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+@media (min-width: 480px) {
+  .whatsapp-buttons { flex-direction: row; justify-content: center; }
+}
