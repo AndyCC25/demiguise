@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { CATALOG_IMAGES, CATALOG_VIDEOS } from "@/data/catalog"
 import { CatalogGallery } from "@/components/CatalogGallery"
 import { WhatsAppCTA } from "@/components/WhatsAppCTA"
@@ -20,13 +19,15 @@ export default function HomePage() {
           style={{ maxWidth: 160, margin: "0 auto 20px" }}
           className="fade-in"
         >
-          {/* next/image handles basePath automatically — do NOT use assetSrc here */}
-          <Image
-            src="/images/msedge_6Fp9NfhDzU.png"
+          {/* assetSrc() prepends NEXT_PUBLIC_BASE_PATH — required because
+               next/image with unoptimized:true in static export does NOT
+               apply basePath to the src attribute */}
+          <img
+            src={assetSrc("/images/msedge_6Fp9NfhDzU.png")}
             alt="Aurium"
             width={160}
             height={160}
-            priority
+            fetchPriority="high"
             style={{ objectFit: "contain", width: "100%", height: "auto" }}
           />
         </div>
