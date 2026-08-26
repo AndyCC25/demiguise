@@ -6,7 +6,7 @@ const { Title, Paragraph } = Typography
 
 // Replace the numbers below with real WhatsApp numbers (Bolivia: 591 + 8 digits, no + or spaces)
 const CONTACTS = [
-  { display: "Diseño y Consultas", aria: "Contactar por WhatsApp — Diseño y Consultas", number: "59170383758" },
+  { display: "Diseño y Consultas", aria: "Contactar por WhatsApp — Diseño y Consultas", number: "59175233258" },
 ] as const
 
 const MESSAGE = encodeURIComponent(
